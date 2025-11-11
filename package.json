@@ -1,0 +1,7 @@
+{
+  "name": "analyzer-galxe-api-refferalcode",
+  "version": "1.0.0",
+  "dependencies": {
+    "ethers": "^5.7.2"
+  }
+}
