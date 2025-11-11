@@ -25,7 +25,7 @@ const NETWORKS = [
     },
     {
         name: "Base",
-        rpc_url: "https://bsc.drpc.org",
+        rpc_url: "https://mainnet.base.org",
         reward_contract: "0xf7523828D4934F468F23A2AECdB1D7CA224E8d38",
         subscribe_contract: "0xa9CF64F158D7D9445555c73D89FfA700397c7d64"
     },
@@ -44,6 +44,14 @@ async function checkReferralCode(network, userAddress) {
         const provider = new ethers.providers.JsonRpcProvider(network.rpc_url);
         const contract = new ethers.Contract(network.reward_contract, REFERRAL_ABI, provider);
         const referralCode = await contract.getReferralCode(userAddress);
+        
+        // Check if referral code exists and is not empty
+        // It could be empty string, null, undefined, or "0x0000000000000000"
+        if (!referralCode || 
+            referralCode === "" ) {
+            return "";
+        }
+        
         return referralCode;
     } catch (error) {
         console.warn(`Error checking referral on ${network.name} for ${userAddress}:`, error.message);
@@ -129,7 +137,8 @@ module.exports = async (req, res) => {
             let activeNetworksCount = 0;
 
             // Count networks with active referral codes
-            for (const result of results) {
+            for (let i = 0; i < results.length; i++) {
+                const result = results[i];
                 // Promise.allSettled ensures that even if one RPC fails, the rest continue
                 if (result.status === 'fulfilled' && result.value !== "") {
                     activeNetworksCount++;
