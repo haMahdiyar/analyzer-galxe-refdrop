@@ -48,10 +48,23 @@ async function checkNetwork(network, userAddress) {
 
 // Main Vercel API function
 module.exports = async (req, res) => {
-    // Set CORS headers for Galxe
-    res.setHeader('Access-Control-Allow-Origin', 'https://galxe.com, https://app.galxe.com, https://dashboard.galxe.com');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Set CORS headers for Galxe - check origin and allow if it's from Galxe domains
+    const allowedOrigins = [
+        'https://galxe.com',
+        'https://app.galxe.com',
+        'https://dashboard.galxe.com'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        // Allow all origins as fallback (you can remove this if you want strict control)
+        res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     // Handle preflight request
     if (req.method === 'OPTIONS') {
