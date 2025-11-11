@@ -48,6 +48,16 @@ async function checkNetwork(network, userAddress) {
 
 // Main Vercel API function
 module.exports = async (req, res) => {
+    // Set CORS headers for Galxe
+    res.setHeader('Access-Control-Allow-Origin', 'https://galxe.com, https://app.galxe.com, https://dashboard.galxe.com');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Handle preflight request
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     // 1. Read user address from URL
     const { address } = req.query;
 
